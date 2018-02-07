@@ -2,15 +2,17 @@
 
 This Arduino project contains a sample/demo application to drive LEDs in a 3D printed "custom case".
 
+Everything in this fork is a work-in-progress...
+ I haven't updated the fritzing file to reflect my changes
+ I can't build a circuit board as well as takacs525 can, so I printed a base for mine (which is a bit oversized at this time)
+
+Added in intensity control for the outer ring by wiring the shift register OE pin to a PWM capable pin on the arduino
+ - Also split the outer ring into two sets of 5 pins to each shift register. This would enable you to use smaller resistors
+Added in two buttons and didn't use the bluetooth module (although the code is still in the project and would work)
+ 
 In motion :-)
 -----------------
-[![Youtube video](https://img.youtube.com/vi/b2yPtyNsJaY/0.jpg)](http://www.youtube.com/watch?v=b2yPtyNsJaY)
-
-Project pictures
------------------
-![LEDs_on_breadboard](Pictures/web/LEDs_on_breadboard_web.jpg) | ![Inner_LED_setup](Pictures/web/Inner_LED_setup_web.jpg)
------------- | -------------
-![Custom_PCB_with_arduino_web](Pictures/web/Custom_PCB_with_arduino_web.jpg) | ![Final](Pictures/web/Final_web.jpg)
+[![Youtube video](https://www.youtube.com/watch?v=bBRC_kys7CE)](https://www.youtube.com/watch?v=bBRC_kys7CE)
 
 File structure
 -----------------
@@ -26,7 +28,8 @@ Required components:
 * 2 SN74HC595 shift registers
 * LEDs
 * Resistors (470 ohm)
-* a Bluetooth module (HC-07)
+* a Bluetooth module (HC-07) (Optional)
+* Two buttons
 
 Software
 -----------------
@@ -34,7 +37,7 @@ To send mode switch commands (key '1' to '4') you can use the serial monitor in 
 
 3D model
 -----------------
+Thanks to takacs525 for his initial work
 Special thanks to Gyorgy Balassy for his incredible work. :clap:
-
 You can find more informatin on his Thingiverse page: [Tony Stark's Bluetooth Controlled Arc Reactor](http://www.thingiverse.com/thing:2069812)
 
