@@ -1,11 +1,11 @@
+// Note: 'Core' refers to the LED at the very center
+//       'Inner Circle' refers to the 8 LEDs in pairs (4 Pins out) around the 'Core'
+
 // Module variables
 int InnerPins[] = {ILED0_PIN, ILED1_PIN, ILED2_PIN, ILED3_PIN, ILED4_PIN};
-int InnerMode = 1;              //Start mode: all on
+int InnerMode = 1;               //Start mode: all on
 
 // Mode variables
-int IM2_Brightness = 0;         // how bright the LED is
-int IM2_FadeAmount = 5;         // how many points to fade the LED by
-
 int IM3_Position = 1;           // Current LED position
 
 // Setup
@@ -13,7 +13,6 @@ void SetupInnerCircle() {
   for (int i = 0; i < 5; i++) {
     pinMode(InnerPins[i], OUTPUT);
   }
-
   ResetInnerCircle();
 }
 
@@ -24,43 +23,64 @@ void ResetInnerCircle() {
 }
 
 void UpInnerCircle() {
-  for (int i = 0; i < 5; i++) {
+  for (int i = 1; i < 5; i++) {
     digitalWrite(InnerPins[i], HIGH);
   }
+  // Reset Brightness
+  for (int i = 0; i < 5; i++) {
+    analogWrite(InnerPins[i], 255);
+  }
 }
+
+void UpCoreCircle() {
+  digitalWrite(InnerPins[0], HIGH);
+  // Reset Brightness
+  for (int i = 0; i < 5; i++) {
+    analogWrite(InnerPins[i], 255);
+  }
+}
+
 //-------------------------------------------------------------------------------
 
 void ModeChangeInner(int change) {
   if (change == 1) {
     InnerMode = InnerMode + 1;
-    if (InnerMode > 3) { InnerMode = 3; }
+    // OLD Stop code: if (InnerMode > 3) { InnerMode = 3; }
+    if (InnerMode > 3) { InnerMode = 0; }
   } else {
     InnerMode = InnerMode - 1;
-    if (InnerMode < 0) { InnerMode = 0; }
+    // OLD Stop code: if (InnerMode < 0) { InnerMode = 0; }
+    if (InnerMode < 0) { InnerMode = 3; }
   }
 
 /*
  * Outer modes:
  *  0: Off
  *  1: On
- *  2: Fade
+ *  2: Pulse
  *  3: Circular
  */
   switch (InnerMode) {
     case 0:
+      Serial.println("Inner Circle: off");
       ResetInnerCircle();
       break;
     case 1:
+      Serial.println("Core Circle: on");
+      UpCoreCircle();
+      Serial.println("Inner Circle: on");
       UpInnerCircle();
       break;
     case 2:
       {
-        IM2_Brightness = 0;    // how bright the LED is
-        IM2_FadeAmount = 5;    // how many points to fade the LED by
+        Serial.println("Core Circle: Pulse");
+        //UpCoreCircle();
+        //UpInnerCircle();
       }
       break;
     case 3:
       {
+        Serial.println("Core Circle: Circle");
         ResetInnerCircle();
         digitalWrite(ILED0_PIN, HIGH);
         digitalWrite(ILED1_PIN, HIGH);
@@ -81,19 +101,16 @@ void LoopInner() {
   }
 }
 
+// Pulse Core & Inner circle
 void LoopInnerMode2() {
   if (Tick % 3 == 0) {
     for (int i = 0; i < 5; i++) {
-      analogWrite(InnerPins[i], IM2_Brightness);
-    }
-    
-    IM2_Brightness = IM2_Brightness + IM2_FadeAmount;
-    if (IM2_Brightness <= 0 || IM2_Brightness >= 255) {
-      IM2_FadeAmount = -IM2_FadeAmount;
+      analogWrite(InnerPins[i], Inner_Brightness);
     }
   }  
 }
 
+// Circular (inner circle)
 void LoopInnerMode3() {
   if (Tick % 20 == 0) {
     digitalWrite(InnerPins[IM3_Position], LOW);
@@ -104,4 +121,5 @@ void LoopInnerMode3() {
     digitalWrite(InnerPins[IM3_Position], HIGH);
   }  
 }
+
 
